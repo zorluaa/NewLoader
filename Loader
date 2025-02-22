@@ -129,10 +129,10 @@ buttonHover(Game1Button)
 buttonHover(Game2Button)
 buttonHover(Game3Button)
 
--- Key Validation & Button Functionality
-SubmitButton.MouseButton1Click:Connect(function()
-    local playerKey = "VoidLua" -- The fixed key
-    if playerKey == "VoidLua" then
+-- Key Validation (No text box or manual input)
+local function validateKeyAndProceed()
+    local key = "VoidLua"  -- Key is hardcoded and assumed valid
+    if key == "VoidLua" then
         keyErrorSound:Stop()
         buttonSound:Play()
         KeyLabel.Text = "Key Accepted! Loading..."
@@ -143,7 +143,10 @@ SubmitButton.MouseButton1Click:Connect(function()
         keyErrorSound:Play()
         KeyLabel.Text = "Incorrect Key! Try Again."
     end
-end)
+end
+
+-- Automatically validate the key when the script runs
+validateKeyAndProceed()
 
 -- Game Button Click Handlers
 Game1Button.MouseButton1Click:Connect(function()
