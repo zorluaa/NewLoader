@@ -67,6 +67,7 @@ Dropdown.TextAlignment = Enum.TextAlignment.Center
 
 UICorner:Clone().Parent = Dropdown
 
+-- Game Buttons
 local function styleButton(button)
     button.BackgroundColor3 = Color3.fromRGB(90, 0, 180) -- Light purple button
     button.Size = UDim2.new(0.8, 0, 0.12, 0)
@@ -90,19 +91,19 @@ end
 Game1Button.Parent = MainFrame
 Game1Button.Position = UDim2.new(0.1, 0, 0.55, 0)
 Game1Button.Text = "Assassin"
-Game1Button.Visible = false
+Game1Button.Visible = true
 styleButton(Game1Button)
 
 Game2Button.Parent = MainFrame
 Game2Button.Position = UDim2.new(0.1, 0, 0.7, 0)
 Game2Button.Text = "Murder VS Sheriff Duels"
-Game2Button.Visible = false
+Game2Button.Visible = true
 styleButton(Game2Button)
 
 Game3Button.Parent = MainFrame
 Game3Button.Position = UDim2.new(0.1, 0, 0.85, 0)
 Game3Button.Text = "Soon"
-Game3Button.Visible = false
+Game3Button.Visible = true
 styleButton(Game3Button)
 
 UpdateLogFrame.Parent = MainContainer
@@ -141,6 +142,7 @@ end
 
 Dropdown.MouseButton1Click:Connect(toggleButtons)
 
+-- Game button click events
 Game1Button.MouseButton1Click:Connect(function()
     loadScript("Assassin")
     ScreenGui:Destroy() -- Destroy the loader after selection
