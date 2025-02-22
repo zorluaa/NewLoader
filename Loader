@@ -65,21 +65,20 @@ local function aimAndThrowKnife()
     end
 end
 
--- Drawing the FOV Circle
+-- Drawing the FOV Circle (Adjusted for visibility)
 local fovCircle = Drawing.new("Circle")
 fovCircle.Radius = FOV_RADIUS
 fovCircle.Position = Vector2.new(Mouse.X, Mouse.Y)
 fovCircle.Color = Color3.fromRGB(255, 0, 0) -- Red color for the FOV circle
 fovCircle.Thickness = 2
 fovCircle.Filled = false
+fovCircle.Visible = true -- Ensure visibility
 
 -- Update the FOV circle position every frame
 game:GetService("RunService").Heartbeat:Connect(function()
+    -- Update the circle's position on the screen
     fovCircle.Position = Vector2.new(Mouse.X, Mouse.Y)
 end)
-
--- Ensure the circle is visible by adding it to the screen
-fovCircle.Visible = true
 
 -- Call aim and shoot when the left mouse button is clicked
 Mouse.Button1Down:Connect(function()
