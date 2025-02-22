@@ -1,76 +1,205 @@
--- UI Creation
+-- Loader Script for Void.lua
+
+local function loadScript(gameName)
+    if gameName == "Assassin" then
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/zorluaa/Void1/refs/heads/main/15"))()
+    elseif gameName == "Murder VS Sheriff Duels" then
+        loadstring(game:HttpGet("https://raw.githubusercontent.com/zorluaa/voidmvsd/refs/heads/main/mvsdvoid"))()
+    elseif gameName == "Soon" then
+        loadstring(game:HttpGet("https://your-link-to-game3-script"))()
+    else
+        print("No script available for the selected game.")
+    end
+end
+
+-- User Interface (UI)
 local ScreenGui = Instance.new("ScreenGui")
 local MainContainer = Instance.new("Frame")
-local KeyPrompt = Instance.new("Frame")
-local KeyLabel = Instance.new("TextLabel")
-local KeyInput = Instance.new("TextBox")  -- TextBox for key input
-local SubmitButton = Instance.new("TextButton")
-local UICorner = Instance.new("UICorner")
+local MainFrame = Instance.new("Frame")
+local TextLabel = Instance.new("TextLabel")
+local Dropdown = Instance.new("TextButton")
+local Game1Button = Instance.new("TextButton")
+local Game2Button = Instance.new("TextButton")
+local Game3Button = Instance.new("TextButton")
+local UpdateLogFrame = Instance.new("Frame")
+local UpdateLogLabel = Instance.new("TextLabel")
+local SnowEffect = Instance.new("ParticleEmitter")
+local UICorner = Instance.new("UICorner") -- Rounded corners
 
 ScreenGui.Parent = game.CoreGui
 
--- Main Container
 MainContainer.Parent = ScreenGui
-MainContainer.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
-MainContainer.Size = UDim2.new(0, 600, 0, 350)
-MainContainer.Position = UDim2.new(0.5, -300, 0.5, -175)
-MainContainer.BackgroundTransparency = 0.3
+MainContainer.BackgroundColor3 = Color3.fromRGB(45, 0, 94) -- Purple background
+MainContainer.Position = UDim2.new(0.5, -300, 0.5, -150)
+MainContainer.Size = UDim2.new(0, 600, 0, 300)
 MainContainer.BorderSizePixel = 0
+MainContainer.BackgroundTransparency = 0.15
 
 local containerUICorner = UICorner:Clone()
 containerUICorner.Parent = MainContainer
 
--- Key Prompt Section
-KeyPrompt.Parent = MainContainer
-KeyPrompt.BackgroundColor3 = Color3.fromRGB(44, 44, 58)
-KeyPrompt.Size = UDim2.new(0, 600, 0, 150)
-KeyPrompt.Position = UDim2.new(0, 0, 0, 0)
-KeyPrompt.BackgroundTransparency = 0.1
+MainFrame.Parent = MainContainer
+MainFrame.BackgroundColor3 = Color3.fromRGB(60, 0, 120) -- Darker purple
+MainFrame.Position = UDim2.new(0, 0, 0, 0)
+MainFrame.Size = UDim2.new(0, 400, 0, 300)
+MainFrame.BorderSizePixel = 0
 
-local keyLabel = KeyLabel
-keyLabel.Parent = KeyPrompt
-keyLabel.Size = UDim2.new(1, 0, 0, 50)
-keyLabel.Position = UDim2.new(0, 0, 0, 10)
-keyLabel.Font = Enum.Font.GothamBold
-keyLabel.Text = "Enter Key:"
-keyLabel.TextSize = 24
-keyLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-keyLabel.TextAlignment = Enum.TextAlignment.Center
+TextLabel.Parent = MainFrame
+TextLabel.BackgroundColor3 = Color3.fromRGB(35, 0, 70)
+TextLabel.Size = UDim2.new(1, 0, 0, 50)
+TextLabel.Font = Enum.Font.GothamBold
+TextLabel.Text = "Void.lua Loader"
+TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+TextLabel.TextSize = 26
+TextLabel.TextAlignment = Enum.TextAlignment.Center
 
-local keyInput = KeyInput
-keyInput.Parent = KeyPrompt
-keyInput.BackgroundColor3 = Color3.fromRGB(55, 55, 70)
-keyInput.Size = UDim2.new(0, 500, 0, 40)
-keyInput.Position = UDim2.new(0.5, -250, 0, 70)
-keyInput.Font = Enum.Font.Gotham
-keyInput.TextColor3 = Color3.fromRGB(255, 255, 255)
-keyInput.TextSize = 18
-keyInput.ClearTextOnFocus = false
-keyInput.Text = ""
+UICorner.CornerRadius = UDim.new(0, 10)
+UICorner.Parent = TextLabel
 
--- Submit Button
-SubmitButton.Parent = KeyPrompt
-SubmitButton.BackgroundColor3 = Color3.fromRGB(58, 58, 74)
-SubmitButton.Size = UDim2.new(0, 200, 0, 50)
-SubmitButton.Position = UDim2.new(0.5, -100, 0, 120)
-SubmitButton.Font = Enum.Font.GothamBold
-SubmitButton.Text = "Submit"
-SubmitButton.TextSize = 18
-SubmitButton.TextColor3 = Color3.fromRGB(255, 255, 255)
-SubmitButton.AutoButtonColor = false
-SubmitButton.BackgroundTransparency = 0.2
-local submitUICorner = UICorner:Clone()
-submitUICorner.Parent = SubmitButton
+Dropdown.Parent = MainFrame
+Dropdown.BackgroundColor3 = Color3.fromRGB(75, 0, 150) -- Purple button
+Dropdown.Position = UDim2.new(0.1, 0, 0.35, 0)
+Dropdown.Size = UDim2.new(0.8, 0, 0.15, 0)
+Dropdown.Font = Enum.Font.Gotham
+Dropdown.Text = "Select Game"
+Dropdown.TextColor3 = Color3.fromRGB(255, 255, 255)
+Dropdown.TextSize = 20
+Dropdown.TextAlignment = Enum.TextAlignment.Center
 
--- Key Validation & Button Functionality
-SubmitButton.MouseButton1Click:Connect(function()
-    -- Check if the key matches "VoidLua"
-    if keyInput.Text == "VoidLua" then
-        keyLabel.Text = "Key Accepted! Proceeding..."
-        -- Add whatever action you need here (like showing game options)
-        -- You can hide the key input frame here if desired
+UICorner:Clone().Parent = Dropdown
+
+-- Snow falling effect
+SnowEffect.Parent = MainContainer
+SnowEffect.Texture = "rbxassetid://3020377802" -- Snowflake texture
+SnowEffect.Size = NumberSequence.new(0.5)
+SnowEffect.Lifetime = NumberRange.new(5, 7)
+SnowEffect.Rate = 10
+SnowEffect.Velocity = Vector3.new(0, -10, 0)
+SnowEffect.SpreadAngle = Vector2.new(0, 360)
+SnowEffect.EmissionDirection = Enum.NormalId.Top
+
+local function styleButton(button)
+    button.BackgroundColor3 = Color3.fromRGB(90, 0, 180) -- Light purple button
+    button.Size = UDim2.new(0.8, 0, 0.12, 0)
+    button.Font = Enum.Font.Gotham
+    button.TextColor3 = Color3.fromRGB(255, 255, 255)
+    button.TextSize = 18
+    button.AutoButtonColor = false
+
+    local buttonUICorner = UICorner:Clone()
+    buttonUICorner.Parent = button
+
+    button.MouseEnter:Connect(function()
+        button.BackgroundColor3 = Color3.fromRGB(100, 0, 200) -- Hover effect
+    end)
+
+    button.MouseLeave:Connect(function()
+        button.BackgroundColor3 = Color3.fromRGB(90, 0, 180) -- Default color
+    end)
+end
+
+Game1Button.Parent = MainFrame
+Game1Button.Position = UDim2.new(0.1, 0, 0.55, 0)
+Game1Button.Text = "Assassin"
+Game1Button.Visible = false
+styleButton(Game1Button)
+
+Game2Button.Parent = MainFrame
+Game2Button.Position = UDim2.new(0.1, 0, 0.7, 0)
+Game2Button.Text = "Murder VS Sheriff Duels"
+Game2Button.Visible = false
+styleButton(Game2Button)
+
+Game3Button.Parent = MainFrame
+Game3Button.Position = UDim2.new(0.1, 0, 0.85, 0)
+Game3Button.Text = "Soon"
+Game3Button.Visible = false
+styleButton(Game3Button)
+
+UpdateLogFrame.Parent = MainContainer
+UpdateLogFrame.BackgroundColor3 = Color3.fromRGB(40, 0, 80) -- Lighter purple
+UpdateLogFrame.Position = UDim2.new(0, 400, 0, 0) 
+UpdateLogFrame.Size = UDim2.new(0, 200, 0, 300)
+UpdateLogFrame.BorderSizePixel = 0
+
+local updateLogUICorner = UICorner:Clone()
+updateLogUICorner.Parent = UpdateLogFrame
+
+UpdateLogLabel.Parent = UpdateLogFrame
+UpdateLogLabel.BackgroundColor3 = Color3.fromRGB(30, 0, 60)
+UpdateLogLabel.Size = UDim2.new(1, 0, 1, 0)
+UpdateLogLabel.Font = Enum.Font.Gotham
+UpdateLogLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+UpdateLogLabel.TextSize = 16
+UpdateLogLabel.TextWrapped = true
+UpdateLogLabel.Text = "Update Log:\n\n• [+] New Custom UI\n• [+] A Loader\n• Credits: Zor For The Script\n• Credits: LUNR For Making The UI"
+
+local function toggleButtons()
+    local isVisible = Game1Button.Visible
+    local buttonList = {Game1Button, Game2Button, Game3Button}
+
+    if isVisible then
+        for _, button in pairs(buttonList) do
+            button:TweenSize(UDim2.new(0.8, 0, 0, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3, true)
+        end
     else
-        keyLabel.Text = "Incorrect Key! Try Again."
-        keyInput.Text = ""  -- Clear the input for retry
+        for _, button in pairs(buttonList) do
+            button.Visible = true
+            button:TweenSize(UDim2.new(0.8, 0, 0.12, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quad, 0.3, true)
+        end
+    end
+end
+
+Dropdown.MouseButton1Click:Connect(toggleButtons)
+
+Game1Button.MouseButton1Click:Connect(function()
+    loadScript("Assassin")
+    ScreenGui:Destroy() -- Destroy the loader after selection
+end)
+
+Game2Button.MouseButton1Click:Connect(function()
+    loadScript("Murder VS Sheriff Duels")
+    ScreenGui:Destroy() -- Destroy the loader after selection
+end)
+
+Game3Button.MouseButton1Click:Connect(function()
+    loadScript("Soon")
+    ScreenGui:Destroy() -- Destroy the loader after selection
+end)
+
+-- Draggable UI
+local dragging
+local dragInput
+local dragStart
+local startPos
+
+local function updateInput(input)
+    local delta = input.Position - dragStart
+    MainContainer.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
+end
+
+MainContainer.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseButton1 then
+        dragging = true
+        dragStart = input.Position
+        startPos = MainContainer.Position
+
+        input.Changed:Connect(function()
+            if input.UserInputState == Enum.UserInputState.End then
+                dragging = false
+            end
+        end)
+    end
+end)
+
+MainContainer.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.MouseMovement then
+        dragInput = input
+    end
+end)
+
+game:GetService("UserInputService").InputChanged:Connect(function(input)
+    if input == dragInput and dragging then
+        updateInput(input)
     end
 end)
