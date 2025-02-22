@@ -56,7 +56,7 @@ keyInput.Position = UDim2.new(0.5, -250, 0, 70)
 keyInput.Font = Enum.Font.Gotham
 keyInput.TextColor3 = Color3.fromRGB(255, 255, 255)
 keyInput.TextSize = 18
-keyInput.ClearTextOnFocus = true  -- Clears the TextBox when focused
+keyInput.ClearTextOnFocus = false  -- Changed to false so text doesn't disappear on focus
 keyInput.Text = ""  -- Empty by default
 
 -- Submit Button
