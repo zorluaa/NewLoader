@@ -1,83 +1,85 @@
+local FOV_RADIUS = 150 -- FOV circle radius
 local Players = game:GetService("Players")
-local RunService = game:GetService("RunService")
-local UserInputService = game:GetService("UserInputService")
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Camera = workspace.CurrentCamera
 local LocalPlayer = Players.LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
 
-local FOV_RADIUS = 75 -- FOV size
-local Target = nil
-
--- Create FOV circle using Drawing.new
-local FOVCircle = Drawing.new("Circle")
-FOVCircle.Radius = FOV_RADIUS
-FOVCircle.Thickness = 2
-FOVCircle.Color = Color3.fromRGB(255, 0, 0)
-FOVCircle.Filled = false
-FOVCircle.Visible = true
-
--- Function to check if a target is inside the FOV circle
-local function isTargetInFOV(target)
-    local screenPoint, onScreen = Camera:WorldToViewportPoint(target.Position)
-    if onScreen then
-        local distance = (Vector2.new(screenPoint.X, screenPoint.Y) - Vector2.new(Mouse.X, Mouse.Y)).Magnitude
-        return distance <= FOV_RADIUS
-    end
-    return false
+-- Helper function to calculate distance between two points
+local function calculateDistance(pos1, pos2)
+    return (pos1 - pos2).Magnitude
 end
 
--- Get the closest enemy inside the FOV
-local function getBestTarget()
-    local closestDistance = math.huge
-    local bestTarget = nil
+-- Function to find the closest player or target
+local function getClosestTarget()
+    local closestTarget = nil
+    local shortestDistance = FOV_RADIUS
 
     for _, player in pairs(Players:GetPlayers()) do
-        if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("Head") then
-            local head = player.Character.Head
-            if isTargetInFOV(head) then
-                local distance = (head.Position - LocalPlayer.Character.Head.Position).Magnitude
-                if distance < closestDistance then
-                    closestDistance = distance
-                    bestTarget = head
-                end
+        if player ~= LocalPlayer and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+            local targetPos = player.Character.HumanoidRootPart.Position
+            local screenPos = Camera:WorldToScreenPoint(targetPos)
+            local distance = calculateDistance(Vector3.new(Mouse.X, Mouse.Y, 0), Vector3.new(screenPos.X, screenPos.Y, 0))
+
+            if distance < shortestDistance then
+                closestTarget = player
+                shortestDistance = distance
             end
         end
     end
-    return bestTarget
+
+    return closestTarget
 end
 
--- Silent Aim for Guns
-local function shootGun()
-    Target = getBestTarget()
-    if Target then
-        local gunController = workspace:FindFirstChild(LocalPlayer.Name) and workspace[LocalPlayer.Name]:FindFirstChild("GunController")
-        if gunController then
-            gunController:FireServer(Target.Position)
-        end
+-- Function to aim and shoot the gun (with silent aim)
+local function aimAndShoot()
+    local targetPlayer = getClosestTarget()
+    if targetPlayer then
+        local targetPos = targetPlayer.Character.HumanoidRootPart.Position
+        local args = {
+            [1] = targetPos,  -- Adjust the target for the gun
+            [2] = targetPos,  -- Adjust the shot location
+            [3] = workspace:WaitForChild("Barn"):WaitForChild("Environment"):WaitForChild("Terrain"),
+            [4] = Vector3.new(-261.4501953125, 95.81401062011719, 607.8159790039062)
+        }
+        ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Shoot"):FireServer(unpack(args))
     end
 end
 
--- Silent Aim for Knives
-local function attackWithKnife()
-    Target = getBestTarget()
-    if Target then
-        local knifeController = workspace:FindFirstChild(LocalPlayer.Name) and workspace[LocalPlayer.Name]:FindFirstChild("KnifeController")
-        if knifeController then
-            knifeController:FireServer(Target.Position)
-        end
+-- Function to aim and throw the knife (with silent aim)
+local function aimAndThrowKnife()
+    local targetPlayer = getClosestTarget()
+    if targetPlayer then
+        local targetPos = targetPlayer.Character.HumanoidRootPart.Position
+        local throwStartArgs = {
+            [1] = workspace:WaitForChild("Rooftop"):WaitForChild("Environment"):WaitForChild("Part"),
+            [2] = targetPos
+        }
+        ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ThrowStart"):FireServer(unpack(throwStartArgs))
+
+        local throwHitArgs = {
+            [1] = workspace:WaitForChild("Rooftop"):WaitForChild("Environment"):WaitForChild("Part"),
+            [2] = targetPos
+        }
+        ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ThrowHit"):FireServer(unpack(throwHitArgs))
     end
 end
 
--- Update FOV circle position
-RunService.RenderStepped:Connect(function()
-    FOVCircle.Position = Vector2.new(Mouse.X, Mouse.Y)
+-- Drawing the FOV Circle
+local fovCircle = Drawing.new("Circle")
+fovCircle.Radius = FOV_RADIUS
+fovCircle.Position = Vector2.new(Mouse.X, Mouse.Y)
+fovCircle.Color = Color3.fromRGB(255, 0, 0) -- Red color for the FOV circle
+fovCircle.Thickness = 2
+fovCircle.Filled = false
+
+-- Update the FOV circle position every frame
+game:GetService("RunService").Heartbeat:Connect(function()
+    fovCircle.Position = Vector2.new(Mouse.X, Mouse.Y)
 end)
 
--- Bind to mouse inputs
-UserInputService.InputBegan:Connect(function(input, gameProcessed)
-    if gameProcessed then return end
-    if input.UserInputType == Enum.UserInputType.MouseButton1 then
-        shootGun()
-        attackWithKnife()
-    end
+-- Call aim and shoot when the left mouse button is clicked
+Mouse.Button1Down:Connect(function()
+    aimAndShoot()
+    aimAndThrowKnife()
 end)
