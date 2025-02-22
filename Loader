@@ -1,20 +1,15 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local RemoteShoot = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Shoot")
-local RemoteThrowStart = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ThrowStart")
-local RemoteThrowHit = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ThrowHit")
-
-local FOV_RADIUS = 100 -- FOV circle radius
+local FOV_RADIUS = 100 -- The radius of the area where silent aim will work
 local Players = game:GetService("Players")
 local Camera = workspace.CurrentCamera
 local LocalPlayer = Players.LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
 
--- Helper function to calculate distance between two points
+-- Function to calculate the distance between two points
 local function calculateDistance(pos1, pos2)
     return (pos1 - pos2).Magnitude
 end
 
--- Function to find the closest player or target
+-- Function to find the closest player within the FOV
 local function getClosestTarget()
     local closestTarget = nil
     local shortestDistance = FOV_RADIUS
@@ -35,42 +30,24 @@ local function getClosestTarget()
     return closestTarget
 end
 
--- Function to aim and shoot the gun (with silent aim)
+-- Function to shoot at the closest target silently
 local function aimAndShoot()
     local targetPlayer = getClosestTarget()
     if targetPlayer then
+        -- Fire the remote or trigger the shot towards the target's position
         local targetPos = targetPlayer.Character.HumanoidRootPart.Position
         local args = {
-            [1] = targetPos,  -- Target for the gun
-            [2] = targetPos,  -- Shot location (adjust as needed)
-            [3] = workspace:WaitForChild("Barn"):WaitForChild("Environment"):WaitForChild("Terrain"),
-            [4] = Vector3.new(-261.4501953125, 95.81401062011719, 607.8159790039062)
+            [1] = targetPos,  -- The target position
+            [2] = targetPos,  -- The shot location
+            -- You can add more arguments based on how your game handles shooting
         }
-        RemoteShoot:FireServer(unpack(args)) -- Ensure the args are correct for the remote
+
+        -- Assuming you have a remote for shooting
+        game:GetService("ReplicatedStorage"):WaitForChild("Remotes"):WaitForChild("Shoot"):FireServer(unpack(args))
     end
 end
 
--- Function to aim and throw the knife (with silent aim)
-local function aimAndThrowKnife()
-    local targetPlayer = getClosestTarget()
-    if targetPlayer then
-        local targetPos = targetPlayer.Character.HumanoidRootPart.Position
-        local throwStartArgs = {
-            [1] = workspace:WaitForChild("Rooftop"):WaitForChild("Environment"):WaitForChild("Part"),
-            [2] = targetPos
-        }
-        RemoteThrowStart:FireServer(unpack(throwStartArgs))
-
-        local throwHitArgs = {
-            [1] = workspace:WaitForChild("Rooftop"):WaitForChild("Environment"):WaitForChild("Part"),
-            [2] = targetPos
-        }
-        RemoteThrowHit:FireServer(unpack(throwHitArgs))
-    end
-end
-
--- Call aim and shoot when the left mouse button is clicked
+-- Call aimAndShoot when the left mouse button is clicked
 Mouse.Button1Down:Connect(function()
     aimAndShoot()
-    aimAndThrowKnife()
 end)
