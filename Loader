@@ -1,4 +1,4 @@
-local FOV_RADIUS = 150 -- FOV circle radius
+local FOV_RADIUS = 100 -- FOV circle radius
 local Players = game:GetService("Players")
 local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Camera = workspace.CurrentCamera
@@ -77,6 +77,9 @@ fovCircle.Filled = false
 game:GetService("RunService").Heartbeat:Connect(function()
     fovCircle.Position = Vector2.new(Mouse.X, Mouse.Y)
 end)
+
+-- Ensure the circle is visible by adding it to the screen
+fovCircle.Visible = true
 
 -- Call aim and shoot when the left mouse button is clicked
 Mouse.Button1Down:Connect(function()
