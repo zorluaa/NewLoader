@@ -1,3 +1,4 @@
+-- Key Validation
 local function loadScript(gameName)
     if gameName == "Assassin" then
         loadstring(game:HttpGet("https://raw.githubusercontent.com/zorluaa/Void1/refs/heads/main/15"))()
@@ -12,151 +13,162 @@ end
 
 -- Sound Effects
 local buttonSound = Instance.new("Sound")
-buttonSound.SoundId = "rbxassetid://YOUR_SOUND_ID"
+buttonSound.SoundId = "rbxassetid://YOUR_BUTTON_SOUND_ID"
 
 local keyErrorSound = Instance.new("Sound")
 keyErrorSound.SoundId = "rbxassetid://YOUR_ERROR_SOUND_ID"
 
--- User Interface (UI)
+-- UI Creation
 local ScreenGui = Instance.new("ScreenGui")
 local MainContainer = Instance.new("Frame")
-local MainFrame = Instance.new("Frame")
-local TextLabel = Instance.new("TextLabel")
-local Dropdown = Instance.new("TextButton")
+local KeyPrompt = Instance.new("Frame")
+local KeyLabel = Instance.new("TextLabel")
+local KeyInput = Instance.new("TextBox")
+local SubmitButton = Instance.new("TextButton")
+local GameSelectionFrame = Instance.new("Frame")
 local Game1Button = Instance.new("TextButton")
 local Game2Button = Instance.new("TextButton")
 local Game3Button = Instance.new("TextButton")
-local KeyInput = Instance.new("TextBox")
-local KeyLabel = Instance.new("TextLabel")
-local UICorner = Instance.new("UICorner") -- Rounded corners
+local UICorner = Instance.new("UICorner")
 
 ScreenGui.Parent = game.CoreGui
 
+-- Main Container
 MainContainer.Parent = ScreenGui
-MainContainer.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-MainContainer.Position = UDim2.new(0.5, -300, 0.5, -150)
-MainContainer.Size = UDim2.new(0, 600, 0, 400)
+MainContainer.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
+MainContainer.Size = UDim2.new(0, 600, 0, 350)
+MainContainer.Position = UDim2.new(0.5, -300, 0.5, -175)
+MainContainer.BackgroundTransparency = 0.3
 MainContainer.BorderSizePixel = 0
-MainContainer.BackgroundTransparency = 0.1
 
 local containerUICorner = UICorner:Clone()
 containerUICorner.Parent = MainContainer
 
-MainFrame.Parent = MainContainer
-MainFrame.BackgroundColor3 = Color3.fromRGB(36, 36, 51) -- Dark Purple
-MainFrame.Position = UDim2.new(0, 0, 0, 0)
-MainFrame.Size = UDim2.new(0, 400, 0, 400)
-MainFrame.BorderSizePixel = 0
-MainFrame.BackgroundTransparency = 0.2
+-- Key Prompt Section
+KeyPrompt.Parent = MainContainer
+KeyPrompt.BackgroundColor3 = Color3.fromRGB(44, 44, 58)
+KeyPrompt.Size = UDim2.new(0, 600, 0, 150)
+KeyPrompt.Position = UDim2.new(0, 0, 0, 0)
+KeyPrompt.BackgroundTransparency = 0.1
 
-TextLabel.Parent = MainFrame
-TextLabel.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-TextLabel.Size = UDim2.new(1, 0, 0, 50)
-TextLabel.Font = Enum.Font.GothamBold
-TextLabel.Text = "Void.lua Loader"
-TextLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-TextLabel.TextSize = 26
-TextLabel.TextAlignment = Enum.TextAlignment.Center
+local keyLabel = KeyLabel
+keyLabel.Parent = KeyPrompt
+keyLabel.Size = UDim2.new(1, 0, 0, 50)
+keyLabel.Position = UDim2.new(0, 0, 0, 10)
+keyLabel.Font = Enum.Font.GothamBold
+keyLabel.Text = "Enter Key: VoidLua"
+keyLabel.TextSize = 24
+keyLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
+keyLabel.TextAlignment = Enum.TextAlignment.Center
 
-UICorner.CornerRadius = UDim.new(0, 10)
-UICorner.Parent = TextLabel
+local keyInput = KeyInput
+keyInput.Parent = KeyPrompt
+keyInput.BackgroundColor3 = Color3.fromRGB(55, 55, 70)
+keyInput.Size = UDim2.new(0, 500, 0, 40)
+keyInput.Position = UDim2.new(0.5, -250, 0, 70)
+keyInput.Font = Enum.Font.Gotham
+keyInput.TextColor3 = Color3.fromRGB(255, 255, 255)
+keyInput.TextSize = 18
+keyInput.ClearTextOnFocus = false
+keyInput.Text = ""
 
-KeyLabel.Parent = MainFrame
-KeyLabel.BackgroundColor3 = Color3.fromRGB(45, 45, 55)
-KeyLabel.Size = UDim2.new(0.8, 0, 0.12, 0)
-KeyLabel.Position = UDim2.new(0.1, 0, 0.2, 0)
-KeyLabel.Font = Enum.Font.Gotham
-KeyLabel.Text = "Enter Key: VoidLua"
-KeyLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
-KeyLabel.TextSize = 18
-KeyLabel.TextAlignment = Enum.TextAlignment.Center
+-- Submit Button
+SubmitButton.Parent = KeyPrompt
+SubmitButton.BackgroundColor3 = Color3.fromRGB(58, 58, 74)
+SubmitButton.Size = UDim2.new(0, 200, 0, 50)
+SubmitButton.Position = UDim2.new(0.5, -100, 0, 120)
+SubmitButton.Font = Enum.Font.GothamBold
+SubmitButton.Text = "Submit"
+SubmitButton.TextSize = 18
+SubmitButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+SubmitButton.AutoButtonColor = false
+SubmitButton.BackgroundTransparency = 0.2
+local submitUICorner = UICorner:Clone()
+submitUICorner.Parent = SubmitButton
 
-KeyInput.Parent = MainFrame
-KeyInput.BackgroundColor3 = Color3.fromRGB(45, 45, 55)
-KeyInput.Size = UDim2.new(0.8, 0, 0.12, 0)
-KeyInput.Position = UDim2.new(0.1, 0, 0.35, 0)
-KeyInput.Font = Enum.Font.Gotham
-KeyInput.TextColor3 = Color3.fromRGB(255, 255, 255)
-KeyInput.TextSize = 18
-KeyInput.ClearTextOnFocus = false
-KeyInput.Text = ""
-
-UICorner:Clone().Parent = KeyInput
-
-local function validateKey(inputText)
-    if inputText == "VoidLua" then
-        return true
-    else
-        keyErrorSound:Play()
-        return false
-    end
+-- Animation Functions
+local function fadeOutPrompt()
+    KeyPrompt:TweenSize(UDim2.new(0, 600, 0, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 0.5, true)
 end
 
-KeyInput.FocusLost:Connect(function(enterPressed)
-    if enterPressed then
-        if validateKey(KeyInput.Text) then
-            KeyLabel.Text = "Key Accepted! Loading..."
-            KeyInput.Visible = false
-            KeyLabel.Visible = false
-            Dropdown.Visible = true
-            Game1Button.Visible = true
-            Game2Button.Visible = true
-            Game3Button.Visible = true
-            dropdownSound:Play()
-        else
-            KeyLabel.Text = "Incorrect Key! Try Again."
-            KeyInput.Text = ""
-        end
-    end
-end)
+local function showGameSelection()
+    GameSelectionFrame:TweenSize(UDim2.new(0, 600, 0, 200), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 0.5, true)
+end
 
-Dropdown.Parent = MainFrame
-Dropdown.BackgroundColor3 = Color3.fromRGB(55, 55, 70)
-Dropdown.Position = UDim2.new(0.1, 0, 0.5, 0)
-Dropdown.Size = UDim2.new(0.8, 0, 0.12, 0)
-Dropdown.Font = Enum.Font.Gotham
-Dropdown.Text = "Select Game"
-Dropdown.TextColor3 = Color3.fromRGB(255, 255, 255)
-Dropdown.TextSize = 20
-Dropdown.Visible = false
+-- Game Selection Frame
+GameSelectionFrame.Parent = ScreenGui
+GameSelectionFrame.BackgroundColor3 = Color3.fromRGB(36, 36, 51) -- Dark Purple
+GameSelectionFrame.Size = UDim2.new(0, 600, 0, 0)
+GameSelectionFrame.Position = UDim2.new(0, 0, 0, 150)
+GameSelectionFrame.BackgroundTransparency = 0.3
+GameSelectionFrame.Visible = false
 
-UICorner:Clone().Parent = Dropdown
+local gameSelectionUICorner = UICorner:Clone()
+gameSelectionUICorner.Parent = GameSelectionFrame
 
-local function styleButton(button)
-    button.BackgroundColor3 = Color3.fromRGB(55, 55, 70)
-    button.Size = UDim2.new(0.8, 0, 0.12, 0)
-    button.Font = Enum.Font.Gotham
-    button.TextColor3 = Color3.fromRGB(255, 255, 255)
-    button.TextSize = 18
-    button.AutoButtonColor = false
-    button.Visible = false
+-- Game Buttons
+Game1Button.Parent = GameSelectionFrame
+Game1Button.BackgroundColor3 = Color3.fromRGB(55, 55, 70)
+Game1Button.Size = UDim2.new(0, 500, 0, 50)
+Game1Button.Position = UDim2.new(0.5, -250, 0, 10)
+Game1Button.Font = Enum.Font.GothamBold
+Game1Button.Text = "Assassin"
+Game1Button.TextSize = 20
+Game1Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+local buttonUICorner1 = UICorner:Clone()
+buttonUICorner1.Parent = Game1Button
 
-    local buttonUICorner = UICorner:Clone()
-    buttonUICorner.Parent = button
+Game2Button.Parent = GameSelectionFrame
+Game2Button.BackgroundColor3 = Color3.fromRGB(55, 55, 70)
+Game2Button.Size = UDim2.new(0, 500, 0, 50)
+Game2Button.Position = UDim2.new(0.5, -250, 0, 70)
+Game2Button.Font = Enum.Font.GothamBold
+Game2Button.Text = "Murder VS Sheriff Duels"
+Game2Button.TextSize = 20
+Game2Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+local buttonUICorner2 = UICorner:Clone()
+buttonUICorner2.Parent = Game2Button
 
+Game3Button.Parent = GameSelectionFrame
+Game3Button.BackgroundColor3 = Color3.fromRGB(55, 55, 70)
+Game3Button.Size = UDim2.new(0, 500, 0, 50)
+Game3Button.Position = UDim2.new(0.5, -250, 0, 130)
+Game3Button.Font = Enum.Font.GothamBold
+Game3Button.Text = "Fisch"
+Game3Button.TextSize = 20
+Game3Button.TextColor3 = Color3.fromRGB(255, 255, 255)
+local buttonUICorner3 = UICorner:Clone()
+buttonUICorner3.Parent = Game3Button
+
+-- Button Hover Effects
+local function buttonHover(button)
     button.MouseEnter:Connect(function()
         button.BackgroundColor3 = Color3.fromRGB(75, 75, 90)
     end)
-
     button.MouseLeave:Connect(function()
         button.BackgroundColor3 = Color3.fromRGB(55, 55, 70)
     end)
 end
 
-Game1Button.Parent = MainFrame
-Game1Button.Position = UDim2.new(0.1, 0, 0.65, 0)
-Game1Button.Text = "Assassin"
-styleButton(Game1Button)
+buttonHover(Game1Button)
+buttonHover(Game2Button)
+buttonHover(Game3Button)
 
-Game2Button.Parent = MainFrame
-Game2Button.Position = UDim2.new(0.1, 0, 0.8, 0)
-Game2Button.Text = "Murder VS Sheriff Duels"
-styleButton(Game2Button)
-
-Game3Button.Parent = MainFrame
-Game3Button.Position = UDim2.new(0.1, 0, 0.95, 0)
-Game3Button.Text = "Fisch"
-styleButton(Game3Button)
+-- Key Validation & Button Functionality
+SubmitButton.MouseButton1Click:Connect(function()
+    if KeyInput.Text == "VoidLua" then
+        keyErrorSound:Stop()
+        buttonSound:Play()
+        KeyLabel.Text = "Key Accepted! Loading..."
+        fadeOutPrompt()
+        wait(0.5)
+        showGameSelection()
+    else
+        keyErrorSound:Play()
+        KeyLabel.Text = "Incorrect Key! Try Again."
+        KeyInput.Text = ""
+    end
+end)
 
 Game1Button.MouseButton1Click:Connect(function()
     loadScript("Assassin")
@@ -173,9 +185,3 @@ Game3Button.MouseButton1Click:Connect(function()
     ScreenGui:Destroy() -- Destroy the loader after selection
 end)
 
--- Animations for a smooth transition
-local function showLoaderAnimation()
-    MainContainer:TweenSize(UDim2.new(0, 600, 0, 400), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 1, true)
-end
-
-showLoaderAnimation()
