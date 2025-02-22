@@ -1,22 +1,19 @@
 local Players = game:GetService("Players")
 local RunService = game:GetService("RunService")
 local UserInputService = game:GetService("UserInputService")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Camera = workspace.CurrentCamera
 local LocalPlayer = Players.LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
 
-local FOV_RADIUS = 75 -- Adjusted for 75 FOV range
+local FOV_RADIUS = 75 -- FOV size
 local Target = nil
 
--- Create the FOV circle UI
-local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
-local FOVCircle = Instance.new("Frame", ScreenGui)
-FOVCircle.Size = UDim2.new(0, FOV_RADIUS * 2, 0, FOV_RADIUS * 2)
-FOVCircle.Position = UDim2.new(0, Mouse.X - FOV_RADIUS, 0, Mouse.Y - FOV_RADIUS)
-FOVCircle.BackgroundTransparency = 0.5
-FOVCircle.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
-FOVCircle.BorderSizePixel = 0
+-- Create FOV circle using Drawing.new
+local FOVCircle = Drawing.new("Circle")
+FOVCircle.Radius = FOV_RADIUS
+FOVCircle.Thickness = 2
+FOVCircle.Color = Color3.fromRGB(255, 0, 0)
+FOVCircle.Filled = false
 FOVCircle.Visible = true
 
 -- Function to check if a target is inside the FOV circle
@@ -53,18 +50,9 @@ end
 local function shootGun()
     Target = getBestTarget()
     if Target then
-        local gun = LocalPlayer.Character:FindFirstChildOfClass("Tool")
-        if gun then
-            local bulletOrigin = Camera.CFrame.Position
-            local aimDirection = (Target.Position - bulletOrigin).unit * 1000
-
-            local ray = Ray.new(bulletOrigin, aimDirection)
-            local hit, position = workspace:FindPartOnRayWithIgnoreList(ray, {LocalPlayer.Character})
-
-            if hit then
-                -- Simulate bullet hit
-                ReplicatedStorage:FindFirstChild("GunHitEvent"):FireServer(Target, position)
-            end
+        local gunController = workspace:FindFirstChild(LocalPlayer.Name) and workspace[LocalPlayer.Name]:FindFirstChild("GunController")
+        if gunController then
+            gunController:FireServer(Target.Position)
         end
     end
 end
@@ -73,17 +61,16 @@ end
 local function attackWithKnife()
     Target = getBestTarget()
     if Target then
-        local knife = LocalPlayer.Character:FindFirstChildOfClass("Tool")
-        if knife then
-            -- Simulate knife hit
-            ReplicatedStorage:FindFirstChild("KnifeHitEvent"):FireServer(Target)
+        local knifeController = workspace:FindFirstChild(LocalPlayer.Name) and workspace[LocalPlayer.Name]:FindFirstChild("KnifeController")
+        if knifeController then
+            knifeController:FireServer(Target.Position)
         end
     end
 end
 
 -- Update FOV circle position
 RunService.RenderStepped:Connect(function()
-    FOVCircle.Position = UDim2.new(0, Mouse.X - FOV_RADIUS, 0, Mouse.Y - FOV_RADIUS)
+    FOVCircle.Position = Vector2.new(Mouse.X, Mouse.Y)
 end)
 
 -- Bind to mouse inputs
