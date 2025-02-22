@@ -10,7 +10,7 @@ local ScreenGui = Instance.new("ScreenGui")
 local MainContainer = Instance.new("Frame")
 local KeyPrompt = Instance.new("Frame")
 local KeyLabel = Instance.new("TextLabel")
-local KeyInput = Instance.new("TextBox")
+local KeyInput = Instance.new("TextBox")  -- TextBox for key input
 local SubmitButton = Instance.new("TextButton")
 local GameSelectionFrame = Instance.new("Frame")
 local Game1Button = Instance.new("TextButton")
@@ -43,7 +43,7 @@ keyLabel.Parent = KeyPrompt
 keyLabel.Size = UDim2.new(1, 0, 0, 50)
 keyLabel.Position = UDim2.new(0, 0, 0, 10)
 keyLabel.Font = Enum.Font.GothamBold
-keyLabel.Text = "Enter Key:"
+keyLabel.Text = "Enter Key"
 keyLabel.TextSize = 24
 keyLabel.TextColor3 = Color3.fromRGB(255, 255, 255)
 keyLabel.TextAlignment = Enum.TextAlignment.Center
@@ -56,8 +56,8 @@ keyInput.Position = UDim2.new(0.5, -250, 0, 70)
 keyInput.Font = Enum.Font.Gotham
 keyInput.TextColor3 = Color3.fromRGB(255, 255, 255)
 keyInput.TextSize = 18
-keyInput.ClearTextOnFocus = false
-keyInput.Text = ""
+keyInput.ClearTextOnFocus = true  -- Clears the TextBox when focused
+keyInput.Text = ""  -- Empty by default
 
 -- Submit Button
 SubmitButton.Parent = KeyPrompt
@@ -73,7 +73,16 @@ SubmitButton.BackgroundTransparency = 0.2
 local submitUICorner = UICorner:Clone()
 submitUICorner.Parent = SubmitButton
 
--- Game Selection Frame (Will be shown after validation)
+-- Animation Functions
+local function fadeOutPrompt()
+    KeyPrompt:TweenSize(UDim2.new(0, 600, 0, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 0.5, true)
+end
+
+local function showGameSelection()
+    GameSelectionFrame:TweenSize(UDim2.new(0, 600, 0, 200), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 0.5, true)
+end
+
+-- Game Selection Frame
 GameSelectionFrame.Parent = ScreenGui
 GameSelectionFrame.BackgroundColor3 = Color3.fromRGB(36, 36, 51) -- Dark Purple
 GameSelectionFrame.Size = UDim2.new(0, 600, 0, 0)
@@ -134,22 +143,21 @@ buttonHover(Game3Button)
 
 -- Key Validation & Button Functionality
 SubmitButton.MouseButton1Click:Connect(function()
-    if KeyInput.Text == "VoidLua" then
+    local enteredKey = keyInput.Text
+    if enteredKey == "VoidLua" then
         keyErrorSound:Stop()
         buttonSound:Play()
-        KeyLabel.Text = "Key Accepted! Loading..."
-        KeyPrompt:TweenSize(UDim2.new(0, 600, 0, 0), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 0.5, true)
+        keyLabel.Text = "Key Accepted! Loading..."
+        fadeOutPrompt()
         wait(0.5)
-        GameSelectionFrame.Visible = true
-        GameSelectionFrame:TweenSize(UDim2.new(0, 600, 0, 200), Enum.EasingDirection.Out, Enum.EasingStyle.Quart, 0.5, true)
+        showGameSelection()
     else
         keyErrorSound:Play()
-        KeyLabel.Text = "Incorrect Key! Try Again."
-        KeyInput.Text = ""
+        keyLabel.Text = "Incorrect Key! Try Again."
+        keyInput.Text = ""
     end
 end)
 
--- Game Button Click Handlers
 Game1Button.MouseButton1Click:Connect(function()
     loadScript("Assassin")
     ScreenGui:Destroy() -- Destroy the loader after selection
