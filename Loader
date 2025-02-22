@@ -1,6 +1,10 @@
+local ReplicatedStorage = game:GetService("ReplicatedStorage")
+local RemoteShoot = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Shoot")
+local RemoteThrowStart = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ThrowStart")
+local RemoteThrowHit = ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ThrowHit")
+
 local FOV_RADIUS = 100 -- FOV circle radius
 local Players = game:GetService("Players")
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
 local Camera = workspace.CurrentCamera
 local LocalPlayer = Players.LocalPlayer
 local Mouse = LocalPlayer:GetMouse()
@@ -37,12 +41,12 @@ local function aimAndShoot()
     if targetPlayer then
         local targetPos = targetPlayer.Character.HumanoidRootPart.Position
         local args = {
-            [1] = targetPos,  -- Adjust the target for the gun
-            [2] = targetPos,  -- Adjust the shot location
+            [1] = targetPos,  -- Target for the gun
+            [2] = targetPos,  -- Shot location (adjust as needed)
             [3] = workspace:WaitForChild("Barn"):WaitForChild("Environment"):WaitForChild("Terrain"),
             [4] = Vector3.new(-261.4501953125, 95.81401062011719, 607.8159790039062)
         }
-        ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("Shoot"):FireServer(unpack(args))
+        RemoteShoot:FireServer(unpack(args)) -- Ensure the args are correct for the remote
     end
 end
 
@@ -55,30 +59,15 @@ local function aimAndThrowKnife()
             [1] = workspace:WaitForChild("Rooftop"):WaitForChild("Environment"):WaitForChild("Part"),
             [2] = targetPos
         }
-        ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ThrowStart"):FireServer(unpack(throwStartArgs))
+        RemoteThrowStart:FireServer(unpack(throwStartArgs))
 
         local throwHitArgs = {
             [1] = workspace:WaitForChild("Rooftop"):WaitForChild("Environment"):WaitForChild("Part"),
             [2] = targetPos
         }
-        ReplicatedStorage:WaitForChild("Remotes"):WaitForChild("ThrowHit"):FireServer(unpack(throwHitArgs))
+        RemoteThrowHit:FireServer(unpack(throwHitArgs))
     end
 end
-
--- Drawing the FOV Circle (Adjusted for visibility)
-local fovCircle = Drawing.new("Circle")
-fovCircle.Radius = FOV_RADIUS
-fovCircle.Position = Vector2.new(Mouse.X, Mouse.Y)
-fovCircle.Color = Color3.fromRGB(255, 0, 0) -- Red color for the FOV circle
-fovCircle.Thickness = 2
-fovCircle.Filled = false
-fovCircle.Visible = true -- Ensure visibility
-
--- Update the FOV circle position every frame
-game:GetService("RunService").Heartbeat:Connect(function()
-    -- Update the circle's position on the screen
-    fovCircle.Position = Vector2.new(Mouse.X, Mouse.Y)
-end)
 
 -- Call aim and shoot when the left mouse button is clicked
 Mouse.Button1Down:Connect(function()
