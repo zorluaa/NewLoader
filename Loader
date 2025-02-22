@@ -23,7 +23,6 @@ local Game2Button = Instance.new("TextButton")
 local Game3Button = Instance.new("TextButton")
 local UpdateLogFrame = Instance.new("Frame")
 local UpdateLogLabel = Instance.new("TextLabel")
-local SnowEffect = Instance.new("ParticleEmitter")
 local UICorner = Instance.new("UICorner") -- Rounded corners
 
 ScreenGui.Parent = game.CoreGui
@@ -67,16 +66,6 @@ Dropdown.TextSize = 20
 Dropdown.TextAlignment = Enum.TextAlignment.Center
 
 UICorner:Clone().Parent = Dropdown
-
--- Snow falling effect
-SnowEffect.Parent = MainContainer
-SnowEffect.Texture = "rbxassetid://3020377802" -- Snowflake texture
-SnowEffect.Size = NumberSequence.new(0.5)
-SnowEffect.Lifetime = NumberRange.new(5, 7)
-SnowEffect.Rate = 10
-SnowEffect.Velocity = Vector3.new(0, -10, 0)
-SnowEffect.SpreadAngle = Vector2.new(0, 360)
-SnowEffect.EmissionDirection = Enum.NormalId.Top
 
 local function styleButton(button)
     button.BackgroundColor3 = Color3.fromRGB(90, 0, 180) -- Light purple button
